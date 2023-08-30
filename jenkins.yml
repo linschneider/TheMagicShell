@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_NAME = 'magicshell-image'
+        DOCKER_IMAGE_TAG = 'latest'
+        HELM_CHART_NAME = 'my-helm-magicshell'
+        HELM_CHART_VERSION = '0.1.0'
+    }
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image from the Dockerfile
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} https://github.com/linschneider/TheMagicShell.git"
+                }
+            }
+        }
+
+        stage('Package Helm Chart') {
+            steps {
+                script {
+                    // Create a Helm chart directory and package the Docker image into it
+                    sh "mkdir ${HELM_CHART_NAME}"
+                    sh "cp -r /path/to/your/helm/chart/* ${HELM_CHART_NAME}/"
+                    sh "sed -i 's|REPLACE_IMAGE|${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}|g' ${HELM_CHART_NAME}/values.yaml"
+                    sh "helm package ${HELM_CHART_NAME} --version ${HELM_CHART_VERSION}"
+                }
+            }
+        }
+
+        stage('Deploy Helm Chart') {
+            steps {
+                script {
+                    // Install or upgrade the Helm chart
+                    sh "helm upgrade --install ${HELM_CHART_NAME} ./${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Archive the Helm chart as a build artifact
+            archiveArtifacts artifacts: "${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz", allowEmptyArchive: true
+        }
+    }
+}
