@@ -1,0 +1,13 @@
+project: default
+source:
+  repoURL: 'https://github.com/linschneider/TheMagicShell.git'
+  path: .
+  targetRevision: HEAD
+  directory:
+    recurse: true
+    jsonnet: {}
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: argocd
+syncPolicy:
+  automated: {}
