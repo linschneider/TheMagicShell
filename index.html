@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url('https://thespongeclub.com/wp-content/uploads/2022/07/Magic-Conch-Shell-Guide.png'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .question-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    width: 70%;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .question-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .submit-button {
+    background-color: #ff9900;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+</style>
+<script>
+  function showAlert(response) {
+    alert(response);
+  }
+</script>
+<title>Magic Shell Questions</title>
+</head>
+<body>
+  <div class="question-container">
+    <h1>I'm the Magic Shell</h1>
+    <h2>Ask me anything:</h2>
+    <form id="question-form" action="/submit" method="post">
+      <input type="text" class="question-input" name="question" placeholder="Ask your question...">
+      <button class="submit-button" type="submit">Submit</button>
+    </form>
+  </div>
+  <script>
+    var questionForm = document.getElementById("question-form");
+    questionForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+  
+      fetch("/submit", {
+        method: "POST",
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(response => showAlert(response))
+      .catch(error => console.error('Fetch Error:', error));
+    });
+  
+    function showAlert(response) {
+      alert("The Magic Shell says: " + response);
+    }
+  </script>
+  
+</body>
+</html>
